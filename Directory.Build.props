@@ -3,13 +3,17 @@
 
   <PropertyGroup>
     <Authors>Steven T. Cramer</Authors>
+    <Company>TimeWarp Enterprises</Company>
     <Product>TimeWarp.OptionsValidation</Product>
-    <PackageVersion>1.0.0-alpha.1+6.0.402</PackageVersion>
-    <PackageProjectUrl>https://timewarpengineering.github.io/timewarp-options-validation/</PackageProjectUrl>
-    <PackageTags>TimeWarp; Options Validation;OptionsValidation; Delegate</PackageTags>
-    <RepositoryUrl>https://github.com/TimeWarpEngineering/timewarp-options-validation.git</RepositoryUrl>
+    <Description>TimeWarp.OptionsValidation uses fluent validation to check your configuration settings.</Description>
     <RepositoryType>git</RepositoryType>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <RepositoryUrl>https://github.com/TimeWarpEngineering/timewarp-options-validation.git</RepositoryUrl>
+    <PackageProjectUrl>https://timewarpengineering.github.io/timewarp-options-validation/</PackageProjectUrl>
+    <PackageTags>TimeWarp; Options Validation;OptionsValidation</PackageTags>
+    <PackageVersion>1.0.0-alpha.1+6.0.402</PackageVersion>
+    <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
+    <PackageIcon>Logo.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <!-- Common compile parameters -->
@@ -17,6 +21,7 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <EnablePreviewFeatures>true</EnablePreviewFeatures>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>preview</LangVersion>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
