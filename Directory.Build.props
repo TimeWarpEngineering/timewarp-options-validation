@@ -10,7 +10,7 @@
     <RepositoryUrl>https://github.com/TimeWarpEngineering/timewarp-options-validation.git</RepositoryUrl>
     <PackageProjectUrl>https://timewarpengineering.github.io/timewarp-options-validation/</PackageProjectUrl>
     <PackageTags>TimeWarp; Options Validation;OptionsValidation</PackageTags>
-    <PackageVersion>1.0.0-alpha.1+6.0.402</PackageVersion>
+    <PackageVersion>1.0.0-alpha.2+6.0.402</PackageVersion>
     <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
     <PackageIcon>Logo.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
