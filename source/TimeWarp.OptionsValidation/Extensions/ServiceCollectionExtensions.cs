@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
-using TimeWarp.Architecture.Configuration;
+using TimeWarp.OptionsValidation;
 
 public static partial class ServiceCollectionExtensions
 {

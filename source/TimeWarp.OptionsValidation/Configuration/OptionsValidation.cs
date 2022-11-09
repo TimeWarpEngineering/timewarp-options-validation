@@ -1,4 +1,4 @@
-﻿namespace TimeWarp.Architecture.Configuration;
+﻿namespace TimeWarp.OptionsValidation;
 
 using FluentValidation;
 using FluentValidation.Results;
