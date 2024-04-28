@@ -1,14 +1,6 @@
 ﻿namespace Microsoft.Extensions.DependencyInjection;
 
-using FluentValidation;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
-using System;
-using System.Linq;
-using TimeWarp.OptionsValidation;
-
-public static partial class ServiceCollectionExtensions
+public static class ServiceCollectionExtensions
 {
   public static IServiceCollection ConfigureOptions<TOptions, TOptionsValidator>
   (
