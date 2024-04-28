@@ -1,7 +1,5 @@
 ﻿namespace TimeWarp.OptionsValidation;
 
-using System;
-
 /// <summary>
 /// The section name in appsettings.json to which the class should be mapped
 /// </summary>
