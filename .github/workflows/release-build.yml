@@ -45,6 +45,14 @@ jobs:
           cd source/TimeWarp.OptionsValidation/bin/Packages
           dotnet nuget push *.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.PUBLISH_TO_NUGET_ORG }}
 
+      - name: Verify Directory.Build.props
+        run: |
+          if (Test-Path -Path "Directory.Build.props") {
+            Get-Content -Path "Directory.Build.props"
+          } else {
+            Write-Error "Directory.Build.props not found at the expected path."
+          }
+
       - name: Tag commit with version
         run: |
           git config --local user.email "action@github.com"
@@ -53,14 +61,14 @@ jobs:
           git tag -a "$version" -m "Release $version"
           git push origin "$version"
 
-      - name: Check if version is not a beta
-        id: check_beta
+      - name: Check if version is not a pre-release
+        id: check_pre_release
         run: |
           $version = (Select-String -Path "Directory.Build.props" -Pattern '<Version>(.*?)</Version>').Matches.Groups[1].Value
-          $isBeta = $version -match '-beta'
-          echo "IsBeta=$isBeta"
-          # Setting output that indicates whether it's a beta version
-          echo "::set-output name=IS_BETA::$isBeta"
+          $isPreRelease = $version -match '-(alpha|beta)'
+          echo "IsPreRelease=$isPreRelease"
+          # Setting output that indicates whether it's a pre-release version
+          echo "::set-output name=IS_PRE_RELEASE::$isPreRelease"
 
       - name: Generate Release Notes
         id: generate_release_notes
@@ -71,6 +79,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Save Release Notes to File
+        if: steps.check_pre_release.outputs.IS_PRE_RELEASE == 'False'
         run: |
           $releaseNotes = "${{ steps.generate_release_notes.outputs.body }}"
           $filePath = "Documentation/ReleaseNotes/Release_${{ steps.tag_commit.outputs.VERSION }}.md"
@@ -83,7 +92,7 @@ jobs:
           git push origin master
 
       - name: Create GitHub Release
-        if: steps.check_beta.outputs.IS_BETA == 'False'
+        if: steps.check_pre_release.outputs.IS_PRE_RELEASE == 'False'
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
