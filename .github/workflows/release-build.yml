@@ -14,7 +14,7 @@ env:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
@@ -22,17 +22,11 @@ jobs:
 
       - name: Check out repository code
         uses: actions/checkout@v3
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
 
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-        shell: pwsh
-
-#      - name: Setup .NET
-#        uses: actions/setup-dotnet@v2
-#        with:
-#          dotnet-version: 8.0.x
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
 
       - name: Build
         run: |
@@ -46,4 +40,38 @@ jobs:
           dotnet nuget push TimeWarp.OptionsValidation.*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
         shell: pwsh
 
+      - name: Tag commit with version
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          $version = "${{ steps.extract_version.outputs.VERSION }}" -replace "\+.*$",""
+          git tag -a $version -m "Release $version"
+          git push origin $version
+        shell: pwsh
+
+      - name: Check if version is not a beta
+        id: check_beta
+        run: |
+          $version = "${{ steps.extract_version.outputs.VERSION }}"
+          $isBeta = $version -match "-beta"
+          echo "IsBeta=$isBeta"
+          # Setting output that indicates whether it's a beta version
+          echo "::set-output name=IS_BETA::$isBeta"
+        shell: pwsh
+
+      - name: Create GitHub Release
+        if: steps.check_beta.outputs.IS_BETA == 'False'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.extract_version.outputs.VERSION }}
+          release_name: Release ${{ steps.extract_version.outputs.VERSION }}
+          draft: false
+          prerelease: false
+          body: "Description of the release goes here."
+
+
+
       - run: echo "🍏 This job's status is ${{ job.status }}."
+
