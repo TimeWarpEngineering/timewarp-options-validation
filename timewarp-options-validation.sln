@@ -15,9 +15,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeWarp.OptionsValidation.Tests", "tests\TimeWarp.OptionsValidation.Tests\TimeWarp.OptionsValidation.Tests.csproj", "{A353C15D-D878-43E7-B567-AAE845FC41BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeWarp.OptionsValidation.Tests", "Tests\TimeWarp.OptionsValidation.Tests\TimeWarp.OptionsValidation.Tests.csproj", "{A353C15D-D878-43E7-B567-AAE845FC41BA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeWarp.OptionsValidation", "source\TimeWarp.OptionsValidation\TimeWarp.OptionsValidation.csproj", "{CAC853CD-7002-4D2F-B53E-112653F779D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeWarp.OptionsValidation", "Source\TimeWarp.OptionsValidation\TimeWarp.OptionsValidation.csproj", "{CAC853CD-7002-4D2F-B53E-112653F779D5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

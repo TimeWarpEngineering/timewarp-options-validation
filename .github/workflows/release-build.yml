@@ -37,12 +37,12 @@ jobs:
 
       - name: Build TimeWarp.OptionsValidation
         run: |
-          cd source/TimeWarp.OptionsValidation/
+          cd Source/TimeWarp.OptionsValidation/
           dotnet build --configuration Debug
 
       - name: Publish TimeWarp.OptionsValidation
         run: |
-          cd source/TimeWarp.OptionsValidation/bin/Packages
+          cd Source/TimeWarp.OptionsValidation/bin/Packages
           dotnet nuget push *.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.PUBLISH_TO_NUGET_ORG }}
 
       - name: Verify Directory.Build.props
@@ -57,14 +57,14 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          $version = (Select-String -Path "Directory.Build.props" -Pattern '<Version>(.*?)</Version>').Matches.Groups[1].Value
+          $version = (Select-String -Path "Directory.Build.props" -Pattern '<PackageVersion>(.*?)</PackageVersion>').Matches.Groups[1].Value
           git tag -a "$version" -m "Release $version"
           git push origin "$version"
 
       - name: Check if version is not a pre-release
         id: check_pre_release
         run: |
-          $version = (Select-String -Path "Directory.Build.props" -Pattern '<Version>(.*?)</Version>').Matches.Groups[1].Value
+          $version = (Select-String -Path "Directory.Build.props" -Pattern '<PackageVersion>(.*?)</PackageVersion>').Matches.Groups[1].Value
           $isPreRelease = $version -match '-(alpha|beta)'
           echo "IsPreRelease=$isPreRelease"
           # Setting output that indicates whether it's a pre-release version

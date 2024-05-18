@@ -7,7 +7,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\source\TimeWarp.OptionsValidation\TimeWarp.OptionsValidation.csproj" />
+    <ProjectReference Include="..\..\Source\TimeWarp.OptionsValidation\TimeWarp.OptionsValidation.csproj" />
   </ItemGroup>
 
 </Project>

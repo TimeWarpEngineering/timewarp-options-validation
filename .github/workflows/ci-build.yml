@@ -17,8 +17,8 @@ jobs:
       matrix:
         project:
           - name: TimeWarp.OptionsValidation
-            path: source/TimeWarp.OptionsValidation/
-            testPath: tests/TimeWarp.OptionsValidation.Tests/
+            path: Source/TimeWarp.OptionsValidation/
+            testPath: Tests/TimeWarp.OptionsValidation.Tests/
 
     steps:
       - name: Print Job Info
