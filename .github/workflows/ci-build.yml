@@ -39,7 +39,7 @@ jobs:
 
       - name: TimeWarp.OptionsValidation.Tests
         run: |
-          cd Tests/TimeWarp.OptionsValidation.Tests/
+          cd tests/TimeWarp.OptionsValidation.Tests/
           dotnet tool restore
           dotnet restore
           dotnet fixie --configuration Debug
