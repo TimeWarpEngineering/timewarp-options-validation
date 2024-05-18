@@ -70,6 +70,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Save Release Notes to File
+        run: |
+          $releaseNotes = "${{ steps.generate_release_notes.outputs.body }}"
+          $filePath = "Documentation/ReleaseNotes/Release_${{ steps.tag_commit.outputs.VERSION }}.md"
+          if (-not (Test-Path -Path "Documentation/ReleaseNotes")) {
+            New-Item -ItemType Directory -Path "Documentation/ReleaseNotes" -Force
+          }
+          Set-Content -Path $filePath -Value $releaseNotes
+          git add $filePath
+          git commit -m "Add release notes for version ${{ steps.tag_commit.outputs.VERSION }}"
+          git push origin master
+
       - name: Create GitHub Release
         if: steps.check_beta.outputs.IS_BETA == 'False'
         uses: actions/create-release@v1
