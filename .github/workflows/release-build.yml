@@ -10,15 +10,22 @@ env:
   DOTNET_NOLOGO: true                     # Disable the .NET logo in the console output
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true # Disable the .NET first time experience to skip caching NuGet packages and speed up the build
   DOTNET_CLI_TELEMETRY_OPTOUT: true
-  NUGET_AUTH_TOKEN: ${{secrets.PUBLISH_TO_NUGET_ORG}}     # <-- This is the token for the GitHub account you want to use.
+  NUGET_AUTH_TOKEN: ${{ secrets.PUBLISH_TO_NUGET_ORG }}     # <-- This is the token for the GitHub account you want to use.
+
+defaults:
+  run:
+    shell: pwsh
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - name: Print Job Info
+        run: |
+          echo "🎉 Job triggered by a ${{ github.event_name }} event."
+          echo "🐧 Running on a ${{ runner.os }} server hosted by GitHub."
+          echo "🔎 Branch name: ${{ github.ref }}, repository: ${{ github.repository }}."
 
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -28,36 +35,40 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
-      - name: Build
+      - name: Build TimeWarp.OptionsValidation
         run: |
           cd source/TimeWarp.OptionsValidation/
           dotnet build --configuration Debug
-        shell: pwsh
 
-      - name: Publish
+      - name: Publish TimeWarp.OptionsValidation
         run: |
           cd source/TimeWarp.OptionsValidation/bin/Packages
-          dotnet nuget push TimeWarp.OptionsValidation.*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
-        shell: pwsh
+          dotnet nuget push *.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.PUBLISH_TO_NUGET_ORG }}
 
       - name: Tag commit with version
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          $version = "${{ steps.extract_version.outputs.VERSION }}" -replace "\+.*$",""
-          git tag -a $version -m "Release $version"
-          git push origin $version
-        shell: pwsh
+          $version = (Select-String -Path "source/TimeWarp.OptionsValidation/Directory.Build.props" -Pattern '<Version>(.*?)</Version>').Matches.Groups[1].Value
+          git tag -a "$version" -m "Release $version"
+          git push origin "$version"
 
       - name: Check if version is not a beta
         id: check_beta
         run: |
-          $version = "${{ steps.extract_version.outputs.VERSION }}"
-          $isBeta = $version -match "-beta"
+          $version = (Select-String -Path "source/TimeWarp.OptionsValidation/Directory.Build.props" -Pattern '<Version>(.*?)</Version>').Matches.Groups[1].Value
+          $isBeta = $version -match '-beta'
           echo "IsBeta=$isBeta"
           # Setting output that indicates whether it's a beta version
           echo "::set-output name=IS_BETA::$isBeta"
-        shell: pwsh
+
+      - name: Generate Release Notes
+        id: generate_release_notes
+        uses: release-drafter/release-drafter@v5
+        with:
+          version: ${{ steps.tag_commit.outputs.VERSION }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create GitHub Release
         if: steps.check_beta.outputs.IS_BETA == 'False'
@@ -65,13 +76,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.extract_version.outputs.VERSION }}
-          release_name: Release ${{ steps.extract_version.outputs.VERSION }}
-          draft: false
+          tag_name: ${{ steps.tag_commit.outputs.VERSION }}
+          release_name: Release ${{ steps.tag_commit.outputs.VERSION }}
+          draft: true
           prerelease: false
-          body: "Description of the release goes here."
+          body: ${{ steps.generate_release_notes.outputs.body }}
 
-
-
-      - run: echo "🍏 This job's status is ${{ job.status }}."
-
+      - name: Print Job Status
+        run: |
+          echo "🍏 Job status: ${{ job.status }}."
