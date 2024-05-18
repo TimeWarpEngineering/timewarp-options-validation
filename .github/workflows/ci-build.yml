@@ -19,9 +19,6 @@ jobs:
           - name: TimeWarp.OptionsValidation
             path: source/TimeWarp.OptionsValidation/
             testPath: tests/TimeWarp.OptionsValidation.Tests/
-          - name: AnotherProject
-            path: source/AnotherProject/
-            testPath: tests/AnotherProject.Tests/
 
     steps:
       - name: Print Job Info
