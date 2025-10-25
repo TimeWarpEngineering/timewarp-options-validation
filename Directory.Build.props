@@ -3,9 +3,9 @@
   <!-- Custom path definitions for repository structure -->
   <PropertyGroup Label="Custom Repository Variables">
     <RepositoryName>timewarp-options-validation</RepositoryName>
-    <SolutionFile>$(RepositoryRoot)timewarp-options-validation.sln</SolutionFile>
+    <SolutionFile>$(RepositoryRoot)timewarp-options-validation.slnx</SolutionFile>
     <RepositoryRoot>$(MSBuildThisFileDirectory)</RepositoryRoot>
-    <SourceDirectory>$(RepositoryRoot)Source/</SourceDirectory>
+    <SourceDirectory>$(RepositoryRoot)source/</SourceDirectory>
     <TestsDirectory>$(RepositoryRoot)Tests/</TestsDirectory>
     <DocumentationDirectory>$(RepositoryRoot)Documentation/</DocumentationDirectory>
     <ArtifactsDirectory>$(RepositoryRoot)artifacts/</ArtifactsDirectory>

@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/source/">
+    <Project Path="source/TimeWarp.OptionsValidation/TimeWarp.OptionsValidation.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="Tests/TimeWarp.OptionsValidation.Tests/TimeWarp.OptionsValidation.Tests.csproj" />
+  </Folder>
+</Solution>
