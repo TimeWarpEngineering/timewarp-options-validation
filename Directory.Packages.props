@@ -25,7 +25,7 @@
     <PackageVersion Include="FluentAssertions" Version="8.8.0" />
     <PackageVersion Include="MediatR" Version="11.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.10" />
-    <PackageVersion Include="TimeWarp.Fixie" Version="2.0.0" />
+    <PackageVersion Include="TimeWarp.Fixie" Version="3.1.0" />
   </ItemGroup>
   <ItemGroup Label="Code Analyzers">
     <PackageVersion Include="Roslynator.Analyzers" Version="4.14.1" />
