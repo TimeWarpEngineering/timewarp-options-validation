@@ -6,7 +6,7 @@
     <SolutionFile>$(RepositoryRoot)timewarp-options-validation.slnx</SolutionFile>
     <RepositoryRoot>$(MSBuildThisFileDirectory)</RepositoryRoot>
     <SourceDirectory>$(RepositoryRoot)source/</SourceDirectory>
-    <TestsDirectory>$(RepositoryRoot)Tests/</TestsDirectory>
+    <TestsDirectory>$(RepositoryRoot)tests/</TestsDirectory>
     <DocumentationDirectory>$(RepositoryRoot)Documentation/</DocumentationDirectory>
     <ArtifactsDirectory>$(RepositoryRoot)artifacts/</ArtifactsDirectory>
     <PackagesDirectory>$(ArtifactsDirectory)packages/</PackagesDirectory>
