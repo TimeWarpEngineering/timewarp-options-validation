@@ -1,0 +1,82 @@
+name: NuGet Publish
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'Source/**'
+      - 'Tests/**'
+      - '.github/workflows/**'
+      - 'Directory.Build.props'
+      - 'Directory.Packages.props'
+  pull_request:
+    branches:
+      - master
+    paths:
+      - 'Source/**'
+      - 'Tests/**'
+      - '.github/workflows/**'
+      - 'Directory.Build.props'
+      - 'Directory.Packages.props'
+  release:
+    types: [published] # Triggered when a release is published via GitHub Releases UI or gh CLI
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g., 1.0.0-beta.3)'
+        required: false
+        type: string
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Create artifacts directory
+        run: mkdir -p artifacts/packages
+
+      - name: Build
+        run: dotnet build --configuration Release
+
+      - name: Test
+        run: |
+          cd Tests/TimeWarp.OptionsValidation.Tests
+          dotnet tool restore
+          dotnet restore
+          dotnet fixie --configuration Release
+
+      - name: Publish to NuGet.org (Releases only)
+        if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && github.event.inputs.version != '')
+        run: |
+          # Get version from either release tag or manual input
+          if [ "${{ github.event_name }}" == "release" ]; then
+            VERSION="${{ github.event.release.tag_name }}"
+            VERSION="${VERSION#v}"  # Remove 'v' prefix if present
+          else
+            VERSION="${{ github.event.inputs.version }}"
+          fi
+
+          echo "Publishing version: $VERSION"
+
+          dotnet nuget push artifacts/packages/TimeWarp.OptionsValidation.$VERSION.nupkg \
+            --api-key ${{ secrets.PUBLISH_TO_NUGET_ORG }} \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
+        env:
+          DOTNET_NUGET_SIGNATURE_VERIFICATION: false
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Packages-${{ github.run_number }}
+          path: artifacts/packages/*.nupkg
