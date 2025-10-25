@@ -1,0 +1,162 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+TimeWarp.OptionsValidation is a .NET library that integrates FluentValidation with Microsoft.Extensions.Options to validate configuration settings at startup. The library provides extension methods to configure and validate options using FluentValidation validators.
+
+## Build and Test Commands
+
+### Build
+```bash
+# Build the entire solution
+dotnet build
+
+# Build specific project
+cd Source/TimeWarp.OptionsValidation/
+dotnet build --configuration Debug
+```
+
+### Test
+```bash
+# Run tests using Fixie (requires tool restore)
+cd Tests/TimeWarp.OptionsValidation.Tests/
+dotnet tool restore
+dotnet restore
+dotnet fixie --configuration Debug
+
+# Run tests from solution root
+dotnet fixie --configuration Debug --project Tests/TimeWarp.OptionsValidation.Tests/
+```
+
+### Package
+```bash
+# Package is auto-generated on build (GeneratePackageOnBuild=true)
+# Output: Source/TimeWarp.OptionsValidation/bin/Packages/
+
+# Build and pack manually if needed
+cd Source/TimeWarp.OptionsValidation/
+dotnet pack --configuration Release
+```
+
+### Tools
+```bash
+# Restore local tools (defined in .config/dotnet-tools.json)
+dotnet tool restore
+
+# Check for outdated packages
+dotnet outdated
+```
+
+## Architecture
+
+### Core Components
+
+**OptionsValidation<TOptions, TOptionsValidator>**
+- Bridge between FluentValidation and Microsoft.Extensions.Options
+- Implements `IValidateOptions<TOptions>`
+- Invoked automatically by the options framework when options are accessed
+- Located in [Source/TimeWarp.OptionsValidation/Configuration/OptionsValidation.cs](Source/TimeWarp.OptionsValidation/Configuration/OptionsValidation.cs)
+
+**ServiceCollectionExtensions**
+- Provides `AddFluentValidatedOptions<TOptions, TValidator>()` extension methods
+- Two overloads: one accepts `IConfiguration`, the other accepts `Action<TOptions>`
+- Returns `OptionsBuilder<T>`, enabling chaining with `.ValidateOnStart()`
+- Automatically discovers configuration keys via `ConfigurationKeyAttribute` or defaults to type name
+- Supports hierarchical keys with colon separators (e.g., "MyApp:Settings:Database")
+- Registers both the validator and the `IValidateOptions<TOptions>` implementation
+- Located in [Source/TimeWarp.OptionsValidation/Extensions/ServiceCollectionExtensions.cs](Source/TimeWarp.OptionsValidation/Extensions/ServiceCollectionExtensions.cs)
+
+**OptionsBuilderExtensions**
+- Provides `ValidateFluentValidation<TOptions, TValidator>()` extension for `OptionsBuilder<T>`
+- Enables chaining with standard `.ValidateOnStart()` method
+- Integrates FluentValidation with Microsoft.Extensions.Options infrastructure
+- Located in [Source/TimeWarp.OptionsValidation/Extensions/OptionsBuilderExtensions.cs](Source/TimeWarp.OptionsValidation/Extensions/OptionsBuilderExtensions.cs)
+
+**ConfigurationKeyAttribute**
+- Allows overriding the configuration key for binding
+- Applied to options classes when the key differs from the class name
+- Supports simple keys ("Database") and hierarchical keys ("MyApp:Settings:Database")
+- Aligns with Microsoft.Extensions.Configuration.IConfiguration.GetSection(string key) parameter naming
+- Located in [Source/TimeWarp.OptionsValidation/Configuration/ConfigurationKeyAttribute.cs](Source/TimeWarp.OptionsValidation/Configuration/ConfigurationKeyAttribute.cs)
+
+### API Usage
+
+**With Startup Validation (Recommended)**
+```csharp
+services.AddFluentValidatedOptions<TOptions, TValidator>(configuration)
+    .ValidateOnStart(); // Validates at startup, fails fast
+```
+- Returns `OptionsBuilder<T>` for method chaining
+- Validates automatically at startup with `.ValidateOnStart()`
+- Integrates with host lifecycle (validates before app runs)
+- Fails fast on invalid configuration at startup
+- Recommended for production applications
+
+**Without Startup Validation**
+```csharp
+services.AddFluentValidatedOptions<TOptions, TValidator>(configuration);
+// Omit .ValidateOnStart() for lazy validation
+```
+- Validates on first access (lazy validation)
+- Useful for development or when startup validation isn't needed
+
+### Usage Pattern
+
+1. Define an options class (e.g., `MyOptions`)
+2. Create a nested sealed FluentValidation validator (e.g., `MyOptions.Validator : AbstractValidator<MyOptions>`)
+3. Optionally decorate options class with `[ConfigurationKey("Key")]` or `[ConfigurationKey("App:Settings:Key")]`
+4. Register with fluent API: `services.AddFluentValidatedOptions<MyOptions, MyOptions.Validator>(configuration).ValidateOnStart()`
+5. Validation executes automatically at startup (with `.ValidateOnStart()`) or on first access (without)
+
+### Project Structure
+
+```
+/Source/TimeWarp.OptionsValidation/     - Main library
+  /Configuration/                       - Core validation logic
+  /Extensions/                          - DI extension methods
+/Tests/TimeWarp.OptionsValidation.Tests/ - Test project using Fixie
+```
+
+## Build Configuration
+
+### Central Package Management
+- Uses `Directory.Packages.props` for centralized version management
+- `ManagePackageVersionsCentrally` is enabled
+- Package references in .csproj files don't specify versions
+
+### Common Properties (Directory.Build.props)
+- **Target Framework**: net10.0
+- **LangVersion**: latest
+- **Nullable**: enabled
+- **TreatWarningsAsErrors**: true
+- **ImplicitUsings**: enabled
+- **Package Version**: Defined in Directory.Build.props (1.0.0-beta.3)
+- **Embedded Resources**: Auto-embeds `.scriban` and `.cstemplate` files
+- **Package Output**: `artifacts/packages/` directory
+
+### Package Metadata
+- NuGet packages include: logo.png, readme.md, and license files
+- All asset references use lowercase filenames
+- PackageOutputPath: `./bin/Packages`
+
+## Testing Framework
+
+Uses **Fixie** (not xUnit/NUnit/MSTest):
+- Custom test discovery convention via TimeWarp.Fixie
+- Test classes end with `_Should_` by convention
+- Test methods are public static void methods
+- Supports `[Skip]` attribute for skipping tests
+- Supports `[TestTag]` for categorization
+- Supports `[Input]` for parameterized tests
+- FluentAssertions for assertions
+
+## File Naming Conventions
+
+All repository root files use **lowercase names**:
+- `license` (not LICENSE)
+- `readme.md` (not README.md)
+- `assets/logo.png` (not Assets/Logo.png)
+
+When updating package metadata, ensure references match these lowercase conventions.

@@ -1,41 +1,82 @@
 <Project>
-  <!-- Set common properties regarding assembly information and nuget packages -->
 
-  <PropertyGroup>
-    <Authors>Steven T. Cramer</Authors>
-    <Company>TimeWarp Enterprises</Company>
-    <Product>TimeWarp.OptionsValidation</Product>
-    <Description>TimeWarp.OptionsValidation uses fluent validation to check your configuration settings.</Description>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/TimeWarpEngineering/timewarp-options-validation.git</RepositoryUrl>
-    <PackageProjectUrl>https://timewarpengineering.github.io/timewarp-options-validation/</PackageProjectUrl>
-    <PackageTags>TimeWarp; Options Validation;OptionsValidation</PackageTags>
-    <PackageVersion>1.0.0-beta.2+8.0.205</PackageVersion>
-    <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
-    <PackageIcon>Logo.png</PackageIcon>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
+  <!-- Custom path definitions for repository structure -->
+  <PropertyGroup Label="Custom Repository Variables">
+    <RepositoryName>timewarp-options-validation</RepositoryName>
+    <SolutionFile>$(RepositoryRoot)timewarp-options-validation.slnx</SolutionFile>
+    <RepositoryRoot>$(MSBuildThisFileDirectory)</RepositoryRoot>
+    <SourceDirectory>$(RepositoryRoot)source/</SourceDirectory>
+    <TestsDirectory>$(RepositoryRoot)tests/</TestsDirectory>
+    <DocumentationDirectory>$(RepositoryRoot)Documentation/</DocumentationDirectory>
+    <ArtifactsDirectory>$(RepositoryRoot)artifacts/</ArtifactsDirectory>
+    <PackagesDirectory>$(ArtifactsDirectory)packages/</PackagesDirectory>
   </PropertyGroup>
 
-  <!-- Common compile parameters -->
-  <PropertyGroup>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <EnablePreviewFeatures>true</EnablePreviewFeatures>
-    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <LangVersion>preview</LangVersion>
+  <!-- MSBuild and NuGet behavior configuration -->
+  <PropertyGroup Label="MSBuild/NuGet Configuration">
+    <!-- Output packages to our local feed directory -->
+    <PackageOutputPath>$(PackagesDirectory)</PackageOutputPath>
+
+    <!-- Central package management -->
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <Nullable>enable</Nullable>
-    <TargetFramework>net8.0</TargetFramework>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+    <!-- Suppress .NET preview SDK message -->
+    <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
   </PropertyGroup>
 
-  <Target Name="EmbedLocal" BeforeTargets="PrepareForBuild">
-    <!-- Include each file with given extension from None collection to EmbeddedResource-->
-    <ItemGroup>
-      <EmbeddedResource Include="@(None -> WithMetadataValue('Extension', '.scriban'))" />
-      <EmbeddedResource Include="@(None -> WithMetadataValue('Extension', '.cstemplate'))" />
-    </ItemGroup>
-  </Target>
+  <!-- Default language and framework settings for all projects -->
+  <PropertyGroup Label="Project Defaults">
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <IsPackable>false</IsPackable>
+    <EnablePreviewFeatures>true</EnablePreviewFeatures>
+  </PropertyGroup>
+
+  <!-- Code quality, analyzers, and warning configuration -->
+  <PropertyGroup Label="Code Quality and Analysis">
+    <!-- Treat all warnings as errors -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningLevel>5</WarningLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisMode>All</AnalysisMode>
+    <AnalysisLevel>latest-all</AnalysisLevel>
+
+    <!-- Report analyzer diagnostics in build output -->
+    <ReportAnalyzer>true</ReportAnalyzer>
+    <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
+
+    <!-- Generate XML documentation files -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+    <!-- Emit compiler generated files for source generators -->
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+
+    <!-- Suppress specific warnings -->
+    <!-- CA1014: CLS compliance not required for this library -->
+    <!-- CA1031: Catch general exceptions (needed for validation error handling) -->
+    <!-- CA1052: Static holder types (acceptable for test classes) -->
+    <!-- CA1515: Make types internal (test classes need to be public) -->
+    <!-- CA1707: Underscores in identifiers (test naming convention uses underscores) -->
+    <!-- CA1724: Type name conflicts (acceptable in this context) -->
+    <!-- CA1812: False positives for DI-instantiated classes -->
+    <!-- CA1848: Use LoggerMessage delegates (performance not critical in validation) -->
+    <!-- CA1852: Seal types (not applicable for test base classes) -->
+    <!-- CA2007: ConfigureAwait (not needed for console applications and tests) -->
+    <!-- RCS1102: Make class static (test classes with static methods are discovered by Fixie) -->
+    <!-- IL2026, IL2067, IL2070, IL2075, IL3050, IL2104, IL3053: AOT warnings (not yet implemented) -->
+    <NoWarn>$(NoWarn);CA1014;CA1031;CA1052;CA1515;CA1707;CA1724;CA1812;CA1848;CA1852;CA2007;RCS1102;IL2026;IL2067;IL2070;IL2075;IL3050;IL2104;IL3053</NoWarn>
+  </PropertyGroup>
+
+  <!-- Code analyzers applied to all projects -->
+  <ItemGroup Label="Code Analyzers">
+    <PackageReference Include="Roslynator.Analyzers" PrivateAssets="all" />
+    <PackageReference Include="Roslynator.CodeAnalysis.Analyzers" PrivateAssets="all" />
+    <PackageReference Include="Roslynator.Formatting.Analyzers" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" PrivateAssets="all" />
+  </ItemGroup>
 
 </Project>
