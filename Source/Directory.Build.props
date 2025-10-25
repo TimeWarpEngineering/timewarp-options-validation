@@ -1,0 +1,34 @@
+<Project>
+  <!-- Import parent Directory.Build.props -->
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+  <!-- Default package metadata (can be overridden in individual projects) -->
+  <PropertyGroup Label="Package Metadata">
+    <PackageVersion>1.0.0-beta.3</PackageVersion>
+    <Authors>Steven T. Cramer</Authors>
+    <Company>TimeWarp Enterprises</Company>
+    <Product>TimeWarp.OptionsValidation</Product>
+    <Description>Integrates FluentValidation with Microsoft.Extensions.Options for configuration validation at startup.</Description>
+    <Copyright>Copyright © 2025 TimeWarp Enterprises</Copyright>
+    <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
+    <PackageIcon>logo.png</PackageIcon>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/TimeWarpEngineering/timewarp-options-validation</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://timewarpengineering.github.io/timewarp-options-validation/</PackageProjectUrl>
+    <PackageTags>FluentValidation;Options;Configuration;Validation;Microsoft.Extensions.Options</PackageTags>
+    <PackageReleaseNotes>See https://github.com/TimeWarpEngineering/timewarp-options-validation/releases</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <PropertyGroup Label="MSBuild Packaging Defaults">
+    <IsPackable>true</IsPackable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup Label="Shared Package Assets">
+    <None Include="$(RepositoryRoot)assets/logo.png" Pack="true" PackagePath="" />
+    <None Include="$(RepositoryRoot)readme.md" Pack="true" PackagePath="" />
+    <None Include="$(RepositoryRoot)license" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+</Project>

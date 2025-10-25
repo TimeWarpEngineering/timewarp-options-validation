@@ -70,22 +70,6 @@
     <NoWarn>$(NoWarn);CA1014;CA1031;CA1052;CA1515;CA1707;CA1724;CA1812;CA1848;CA1852;CA2007;RCS1102;IL2026;IL2067;IL2070;IL2075;IL3050;IL2104;IL3053</NoWarn>
   </PropertyGroup>
 
-  <!-- NuGet package metadata (for packable projects) -->
-  <PropertyGroup Label="Package Metadata">
-    <Authors>Steven T. Cramer</Authors>
-    <Company>TimeWarp Enterprises</Company>
-    <Product>TimeWarp.OptionsValidation</Product>
-    <Description>TimeWarp.OptionsValidation uses fluent validation to check your configuration settings.</Description>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/TimeWarpEngineering/timewarp-options-validation.git</RepositoryUrl>
-    <PackageProjectUrl>https://timewarpengineering.github.io/timewarp-options-validation/</PackageProjectUrl>
-    <PackageTags>TimeWarp;Options Validation;OptionsValidation;FluentValidation;Configuration</PackageTags>
-    <PackageVersion>1.0.0-beta.3</PackageVersion>
-    <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
-    <PackageIcon>logo.png</PackageIcon>
-    <PackageReadmeFile>readme.md</PackageReadmeFile>
-  </PropertyGroup>
-
   <!-- Code analyzers applied to all projects -->
   <ItemGroup Label="Code Analyzers">
     <PackageReference Include="Roslynator.Analyzers" PrivateAssets="all" />
@@ -94,13 +78,5 @@
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" PrivateAssets="all" />
   </ItemGroup>
-
-  <Target Name="EmbedLocal" BeforeTargets="PrepareForBuild">
-    <!-- Include each file with given extension from None collection to EmbeddedResource-->
-    <ItemGroup>
-      <EmbeddedResource Include="@(None -> WithMetadataValue('Extension', '.scriban'))" />
-      <EmbeddedResource Include="@(None -> WithMetadataValue('Extension', '.cstemplate'))" />
-    </ItemGroup>
-  </Target>
 
 </Project>

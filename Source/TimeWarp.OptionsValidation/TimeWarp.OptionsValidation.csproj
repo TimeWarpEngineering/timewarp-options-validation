@@ -1,16 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <IsPackable>true</IsPackable>
     <RootNamespace>TimeWarp.OptionsValidation</RootNamespace>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="$(RepositoryRoot)assets/logo.png" Pack="true" PackagePath="" />
-    <None Include="$(RepositoryRoot)readme.md" Pack="true" PackagePath="" />
-    <None Include="$(RepositoryRoot)license" Pack="true" PackagePath="" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="FluentValidation" />
