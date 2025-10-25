@@ -107,9 +107,21 @@ app.Run(); // Validation happens automatically before this runs
 
 ### Configuration Binding
 
-#### Using appsettings.json
+The library automatically discovers which configuration section to bind based on simple, predictable rules.
 
-By default, the library looks for a configuration section with the same name as your options class:
+#### Default: Class Name
+
+By default, the library uses the **class name** as the configuration section name:
+
+```csharp
+public class DatabaseOptions
+{
+  public string ConnectionString { get; set; } = string.Empty;
+  // ...
+}
+```
+
+Binds to `"DatabaseOptions"` section:
 
 ```json
 {
@@ -122,14 +134,15 @@ By default, the library looks for a configuration section with the same name as 
 ```
 
 ```csharp
+// Automatically binds to "DatabaseOptions" section
 services
   .AddFluentValidatedOptions<DatabaseOptions, DatabaseOptions.Validator>(configuration)
   .ValidateOnStart();
 ```
 
-#### Custom Section Names
+#### Custom Section Name with `[SectionName]` Attribute
 
-Use the `[SectionName]` attribute to map to a different configuration section:
+Override the default by decorating your options class with `[SectionName]`:
 
 ```csharp
 using TimeWarp.OptionsValidation;
@@ -142,7 +155,7 @@ public class DatabaseOptions
 }
 ```
 
-Now it will bind to the "Database" section instead of "DatabaseOptions":
+Now binds to `"Database"` section:
 
 ```json
 {
@@ -153,6 +166,32 @@ Now it will bind to the "Database" section instead of "DatabaseOptions":
   }
 }
 ```
+
+```csharp
+// Automatically binds to "Database" section (via attribute)
+services
+  .AddFluentValidatedOptions<DatabaseOptions, DatabaseOptions.Validator>(configuration)
+  .ValidateOnStart();
+```
+
+#### Advanced: Manual Section Path
+
+For complex scenarios (nested paths, environment-specific sections, etc.), use the manual approach:
+
+```csharp
+// Manual binding to nested section path
+services.AddOptions<DatabaseOptions>()
+  .Bind(configuration.GetSection("MyApp:Settings:Database"))
+  .ValidateFluentValidation<DatabaseOptions, DatabaseOptions.Validator>()
+  .ValidateOnStart();
+```
+
+**Automatic Section Name Resolution:**
+- ✅ Uses class name: `DatabaseOptions` → `"DatabaseOptions"`
+- ✅ Respects `[SectionName("Custom")]` attribute
+- ❌ Does NOT automatically handle nested paths (use manual binding)
+- ❌ Does NOT trim suffixes like "Options"
+- ❌ Does NOT pluralize names
 
 ### Programmatic Configuration
 
