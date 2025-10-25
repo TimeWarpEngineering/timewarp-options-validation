@@ -14,7 +14,7 @@
 
 # TimeWarp.OptionsValidation
 
-![TimeWarp Logo](Assets/Logo.png)
+![TimeWarp Logo](assets/logo.png)
 
 TimeWarp.OptionsValidation uses fluent validation to check your configuration settings.
 
