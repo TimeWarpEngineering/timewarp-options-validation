@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup>
+    <AssemblyName>TimeWarp.OptionsValidation.Tests</AssemblyName>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Fixie.TestAdapter" />
     <PackageReference Include="FluentAssertions" />
@@ -7,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="$(SourceDirectory)TimeWarp.OptionsValidation\TimeWarp.OptionsValidation.csproj" />
+    <ProjectReference Include="$(SourceDirectory)timewarp-options-validation\timewarp-options-validation.csproj" />
   </ItemGroup>
 
 </Project>
