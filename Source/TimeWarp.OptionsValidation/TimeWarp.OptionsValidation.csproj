@@ -1,16 +1,15 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <IsPackable>true</IsPackable>
     <RootNamespace>TimeWarp.OptionsValidation</RootNamespace>
-    <PackageOutputPath>./bin/Packages</PackageOutputPath>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\..\assets\logo.png" Pack="true" PackagePath="\"/>
-    <None Include="..\..\readme.md" Pack="true" PackagePath="\"/>
-    <None Include="..\..\license" Pack="true" PackagePath="\"/>
+    <None Include="$(RepositoryRoot)assets/logo.png" Pack="true" PackagePath="" />
+    <None Include="$(RepositoryRoot)readme.md" Pack="true" PackagePath="" />
+    <None Include="$(RepositoryRoot)license" Pack="true" PackagePath="" />
   </ItemGroup>
 
   <ItemGroup>
