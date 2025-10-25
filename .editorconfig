@@ -255,6 +255,9 @@ dotnet_naming_style.local_function_style.capitalization = pascal_case
 #### Analyizer settings ####
 dotnet_code_quality.null_check_validation_methods = NotNull
 
+# TWA001: Enforce kebab-case naming convention
+dotnet_diagnostic.TWA001.severity = warning
+
 # CA1062: Validate arguments of public methods
 # TODO: Turn this back on when figure out how to get Dawn.Guard to not trigger it.
 dotnet_diagnostic.CA1062.severity = silent
