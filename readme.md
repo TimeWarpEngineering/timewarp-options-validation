@@ -45,9 +45,9 @@ You can see the latest NuGet packages from the official [TimeWarp NuGet page](ht
 
 ## Usage
 
-### Basic Example
+### Recommended: Fluent API with Automatic Startup Validation
 
-Here's a complete example showing how to validate database configuration settings:
+The recommended approach uses `AddFluentValidatedOptions()` which returns `OptionsBuilder<T>`, allowing you to chain with `.ValidateOnStart()` for automatic startup validation.
 
 #### 1. Define Your Options Class
 
@@ -85,32 +85,28 @@ public class DatabaseOptionsValidator : AbstractValidator<DatabaseOptions>
 }
 ```
 
-#### 3. Register in Your DI Container
+#### 3. Register with Automatic Startup Validation
 
 ```csharp
 using Microsoft.Extensions.DependencyInjection;
 
-// In your Program.cs or Startup.cs
-services.ConfigureOptions<DatabaseOptions, DatabaseOptionsValidator>(configuration);
+var builder = WebApplication.CreateBuilder(args);
+
+// Register options with automatic startup validation
+builder.Services
+  .AddFluentValidatedOptions<DatabaseOptions, DatabaseOptionsValidator>(builder.Configuration)
+  .ValidateOnStart(); // ✅ Validates when host starts, throws on error
+
+var app = builder.Build();
+app.Run(); // Validation happens automatically before this runs
 ```
 
-This will:
-- Bind the `DatabaseOptions` section from your configuration (appsettings.json)
-- Register the validator
-- Automatically validate when the options are first accessed
-
-#### 4. (Optional) Validate at Startup
-
-To catch configuration errors immediately when your application starts:
-
-```csharp
-var serviceProvider = services.BuildServiceProvider();
-
-// Validate all registered options
-serviceProvider.ValidateOptions(services, logger);
-```
-
-If validation fails, this will throw an exception with detailed error messages, preventing your application from starting with invalid configuration.
+**What this does:**
+- Binds the `DatabaseOptions` section from appsettings.json
+- Registers the FluentValidation validator
+- **Validates configuration at startup** (before `app.Run()`)
+- **Fails fast with clear error messages** if configuration is invalid
+- No manual validation calls needed!
 
 ### Configuration Binding
 
@@ -129,7 +125,9 @@ By default, the library looks for a configuration section with the same name as 
 ```
 
 ```csharp
-services.ConfigureOptions<DatabaseOptions, DatabaseOptionsValidator>(configuration);
+services
+  .AddFluentValidatedOptions<DatabaseOptions, DatabaseOptionsValidator>(configuration)
+  .ValidateOnStart();
 ```
 
 #### Custom Section Names
@@ -161,49 +159,71 @@ Now it will bind to the "Database" section instead of "DatabaseOptions":
 
 ### Programmatic Configuration
 
-You can also configure options without IConfiguration:
+You can also configure options programmatically without IConfiguration:
 
 ```csharp
-services.ConfigureOptions<DatabaseOptions, DatabaseOptionsValidator>(options =>
-{
-  options.ConnectionString = "Server=localhost;Database=myapp;";
-  options.MaxRetries = 3;
-  options.CommandTimeout = 30;
-});
+services
+  .AddFluentValidatedOptions<DatabaseOptions, DatabaseOptionsValidator>(options =>
+  {
+    options.ConnectionString = "Server=localhost;Database=myapp;";
+    options.MaxRetries = 3;
+    options.CommandTimeout = 30;
+  })
+  .ValidateOnStart();
 ```
 
 ### Complete Startup Example
 
 ```csharp
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Register validated options
-builder.Services.ConfigureOptions<DatabaseOptions, DatabaseOptionsValidator>(builder.Configuration);
-builder.Services.ConfigureOptions<CacheOptions, CacheOptionsValidator>(builder.Configuration);
-builder.Services.ConfigureOptions<EmailOptions, EmailOptionsValidator>(builder.Configuration);
+// Register multiple validated options with automatic startup validation
+builder.Services
+  .AddFluentValidatedOptions<DatabaseOptions, DatabaseOptionsValidator>(builder.Configuration)
+  .ValidateOnStart();
+
+builder.Services
+  .AddFluentValidatedOptions<CacheOptions, CacheOptionsValidator>(builder.Configuration)
+  .ValidateOnStart();
+
+builder.Services
+  .AddFluentValidatedOptions<EmailOptions, EmailOptionsValidator>(builder.Configuration)
+  .ValidateOnStart();
 
 var app = builder.Build();
-
-// Validate all options at startup (recommended)
-app.Services.ValidateOptions(builder.Services, app.Logger);
-
-app.Run();
+app.Run(); // All options validated before this runs
 ```
 
-If any configuration is invalid, the application will fail to start with clear error messages indicating exactly which settings are invalid and why.
+If any configuration is invalid, the application will **fail to start** with clear error messages indicating exactly which settings are invalid and why.
+
+### Alternative: Simple Registration (Without Startup Validation)
+
+If you don't need automatic startup validation, you can use the simpler `ConfigureOptions()` method:
+
+```csharp
+// Simpler syntax, but validates on first access instead of at startup
+services.ConfigureOptions<DatabaseOptions, DatabaseOptionsValidator>(configuration);
+```
+
+**Comparison:**
+
+| Approach | Validates | Supports `.ValidateOnStart()` | Best For |
+|----------|-----------|-------------------------------|----------|
+| `AddFluentValidatedOptions()` | At startup (with `.ValidateOnStart()`) | ✅ Yes | Production apps - fail fast on invalid config |
+| `ConfigureOptions()` | On first access | ❌ No | Simple scenarios, development |
 
 ## Features
 
+- **Automatic Startup Validation**: Use `.ValidateOnStart()` to fail fast on invalid configuration
 - **Automatic Section Discovery**: Uses the class name as the configuration section name by default
 - **Custom Section Mapping**: Use `[SectionName]` attribute to override the section name
-- **Seamless Integration**: Works with Microsoft.Extensions.Options infrastructure
-- **Startup Validation**: Optional helper method to validate all options when the application starts
-- **Clear Error Messages**: FluentValidation provides detailed, actionable error messages
+- **Seamless Integration**: Works with Microsoft.Extensions.Options infrastructure and `OptionsBuilder<T>`
+- **FluentValidation Power**: Rich validation rules, custom validators, conditional validation
+- **Clear Error Messages**: Detailed, actionable error messages from FluentValidation
 - **Type Safety**: Strongly-typed options with compile-time checking
+- **Flexible API**: Choose between fluent API (with `.ValidateOnStart()`) or simple registration
 
 ## Releases
 

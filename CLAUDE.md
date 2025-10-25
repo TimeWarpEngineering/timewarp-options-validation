@@ -60,24 +60,56 @@ dotnet outdated
 - Located in [Source/TimeWarp.OptionsValidation/Configuration/OptionsValidation.cs](Source/TimeWarp.OptionsValidation/Configuration/OptionsValidation.cs)
 
 **ServiceCollectionExtensions**
-- Provides `ConfigureOptions<TOptions, TOptionsValidator>` extension methods
-- Two overloads: one accepts `IConfiguration`, the other accepts `Action<TOptions>`
+- Provides two API patterns for configuring options with FluentValidation:
+  - `AddFluentValidatedOptions<TOptions, TValidator>()` - Returns `OptionsBuilder<T>`, supports `.ValidateOnStart()`
+  - `ConfigureOptions<TOptions, TValidator>()` - Returns `IServiceCollection`, simpler API
+- Two overloads for each: one accepts `IConfiguration`, the other accepts `Action<TOptions>`
 - Automatically discovers configuration section names via `SectionNameAttribute` or defaults to type name
 - Registers both the validator and the `IValidateOptions<TOptions>` implementation
 - Located in [Source/TimeWarp.OptionsValidation/Extensions/ServiceCollectionExtensions.cs](Source/TimeWarp.OptionsValidation/Extensions/ServiceCollectionExtensions.cs)
+
+**OptionsBuilderExtensions**
+- Provides `ValidateFluentValidation<TOptions, TValidator>()` extension for `OptionsBuilder<T>`
+- Enables chaining with standard `.ValidateOnStart()` method
+- Integrates FluentValidation with Microsoft.Extensions.Options infrastructure
+- Located in [Source/TimeWarp.OptionsValidation/Extensions/OptionsBuilderExtensions.cs](Source/TimeWarp.OptionsValidation/Extensions/OptionsBuilderExtensions.cs)
 
 **SectionNameAttribute**
 - Allows overriding the configuration section name
 - Applied to options classes when the section name differs from the class name
 - Located in [Source/TimeWarp.OptionsValidation/Configuration/SectionNameAttribute.cs](Source/TimeWarp.OptionsValidation/Configuration/SectionNameAttribute.cs)
 
+### API Patterns
+
+The library provides two API patterns:
+
+**Fluent API (Recommended for Production)**
+```csharp
+services.AddFluentValidatedOptions<TOptions, TValidator>(configuration)
+    .ValidateOnStart(); // Validates at startup, fails fast
+```
+- Returns `OptionsBuilder<T>` for method chaining
+- Supports `.ValidateOnStart()` for automatic startup validation
+- Integrates with host lifecycle (validates before app runs)
+- Fails fast on invalid configuration at startup
+- Best for production applications
+
+**Simple API (For Development/Simple Scenarios)**
+```csharp
+services.ConfigureOptions<TOptions, TValidator>(configuration);
+```
+- Returns `IServiceCollection` for simple chaining
+- Validates on first access (lazy validation)
+- Simpler syntax for basic scenarios
+- Best for development or when startup validation isn't critical
+
 ### Usage Pattern
 
 1. Define an options class (e.g., `MyOptions`)
 2. Create a FluentValidation validator (e.g., `MyOptionsValidator : AbstractValidator<MyOptions>`)
 3. Optionally decorate options class with `[SectionName("ConfigSectionName")]`
-4. Register in DI: `services.ConfigureOptions<MyOptions, MyOptionsValidator>(configuration)`
-5. Validation executes automatically when options are first accessed
+4. Register with fluent API: `services.AddFluentValidatedOptions<MyOptions, MyOptionsValidator>(configuration).ValidateOnStart()`
+5. Validation executes automatically at startup (with `.ValidateOnStart()`) or on first access (without)
 
 ### Project Structure
 
@@ -96,13 +128,14 @@ dotnet outdated
 - Package references in .csproj files don't specify versions
 
 ### Common Properties (Directory.Build.props)
-- **Target Framework**: net8.0
-- **LangVersion**: preview
+- **Target Framework**: net10.0
+- **LangVersion**: latest
 - **Nullable**: enabled
 - **TreatWarningsAsErrors**: true
 - **ImplicitUsings**: enabled
 - **Package Version**: Defined in Directory.Build.props (1.0.0-beta.3)
 - **Embedded Resources**: Auto-embeds `.scriban` and `.cstemplate` files
+- **Package Output**: `artifacts/packages/` directory
 
 ### Package Metadata
 - NuGet packages include: logo.png, readme.md, and license files
