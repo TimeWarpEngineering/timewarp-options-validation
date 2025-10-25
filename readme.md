@@ -144,6 +144,7 @@ services
 
 Override the default by decorating your options class with `[SectionName]`:
 
+**Simple Section Name:**
 ```csharp
 using TimeWarp.OptionsValidation;
 
@@ -155,7 +156,7 @@ public class DatabaseOptions
 }
 ```
 
-Now binds to `"Database"` section:
+Binds to `"Database"` section:
 
 ```json
 {
@@ -167,31 +168,58 @@ Now binds to `"Database"` section:
 }
 ```
 
+**Nested Path with Colon Separator:**
 ```csharp
-// Automatically binds to "Database" section (via attribute)
+[SectionName("MyApp:Settings:Database")]
+public class DatabaseOptions
+{
+  public string ConnectionString { get; set; } = string.Empty;
+  // ...
+}
+```
+
+Binds to nested `"MyApp" → "Settings" → "Database"` path:
+
+```json
+{
+  "MyApp": {
+    "Settings": {
+      "Database": {
+        "ConnectionString": "Server=localhost;Database=myapp;",
+        "MaxRetries": 3,
+        "CommandTimeout": 30
+      }
+    }
+  }
+}
+```
+
+```csharp
+// Automatically binds to section specified in attribute
 services
   .AddFluentValidatedOptions<DatabaseOptions, DatabaseOptions.Validator>(configuration)
   .ValidateOnStart();
 ```
 
-#### Advanced: Manual Section Path
+#### Advanced: Manual Section Binding
 
-For complex scenarios (nested paths, environment-specific sections, etc.), use the manual approach:
+For dynamic section paths or complex scenarios not covered by the attribute:
 
 ```csharp
-// Manual binding to nested section path
+// Manual binding for runtime-determined paths
+string environment = builder.Environment.EnvironmentName;
 services.AddOptions<DatabaseOptions>()
-  .Bind(configuration.GetSection("MyApp:Settings:Database"))
+  .Bind(configuration.GetSection($"{environment}:Database"))
   .ValidateFluentValidation<DatabaseOptions, DatabaseOptions.Validator>()
   .ValidateOnStart();
 ```
 
-**Automatic Section Name Resolution:**
+**Automatic Section Name Resolution Summary:**
 - ✅ Uses class name: `DatabaseOptions` → `"DatabaseOptions"`
-- ✅ Respects `[SectionName("Custom")]` attribute
-- ❌ Does NOT automatically handle nested paths (use manual binding)
-- ❌ Does NOT trim suffixes like "Options"
-- ❌ Does NOT pluralize names
+- ✅ Simple override: `[SectionName("Database")]` → `"Database"`
+- ✅ Nested paths: `[SectionName("MyApp:Settings:Database")]` → `"MyApp" → "Settings" → "Database"`
+- ❌ Does NOT trim suffixes like "Options" automatically
+- ❌ Does NOT pluralize names automatically
 
 ### Programmatic Configuration
 

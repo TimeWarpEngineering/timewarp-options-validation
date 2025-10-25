@@ -13,13 +13,23 @@ public static class ServiceCollectionExtensions
   /// <param name="services">The service collection</param>
   /// <param name="configuration">The configuration instance to bind from</param>
   /// <returns>The OptionsBuilder for method chaining (supports .ValidateOnStart())</returns>
+  /// <remarks>
+  /// Section name resolution:
+  /// - Default: Uses class name (DatabaseOptions → "DatabaseOptions")
+  /// - Custom: Uses [SectionName("Database")] → "Database"
+  /// - Nested: Uses [SectionName("MyApp:Settings:Database")] → nested path
+  /// </remarks>
   /// <example>
   /// <code>
-  /// // Binds from "DatabaseOptions" section in appsettings.json
+  /// // Default: Binds from "DatabaseOptions" section
   /// services.AddFluentValidatedOptions&lt;DatabaseOptions, DatabaseOptions.Validator&gt;(configuration)
   ///     .ValidateOnStart();
   ///
-  /// // Or with custom section name using [SectionName("Database")] attribute
+  /// // Custom: [SectionName("Database")] binds from "Database" section
+  /// services.AddFluentValidatedOptions&lt;DatabaseOptions, DatabaseOptions.Validator&gt;(configuration)
+  ///     .ValidateOnStart();
+  ///
+  /// // Nested: [SectionName("MyApp:Settings:Database")] binds from nested path
   /// services.AddFluentValidatedOptions&lt;DatabaseOptions, DatabaseOptions.Validator&gt;(configuration)
   ///     .ValidateOnStart();
   /// </code>
