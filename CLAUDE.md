@@ -63,7 +63,8 @@ dotnet outdated
 - Provides `AddFluentValidatedOptions<TOptions, TValidator>()` extension methods
 - Two overloads: one accepts `IConfiguration`, the other accepts `Action<TOptions>`
 - Returns `OptionsBuilder<T>`, enabling chaining with `.ValidateOnStart()`
-- Automatically discovers configuration section names via `SectionNameAttribute` or defaults to type name
+- Automatically discovers configuration keys via `ConfigurationKeyAttribute` or defaults to type name
+- Supports hierarchical keys with colon separators (e.g., "MyApp:Settings:Database")
 - Registers both the validator and the `IValidateOptions<TOptions>` implementation
 - Located in [Source/TimeWarp.OptionsValidation/Extensions/ServiceCollectionExtensions.cs](Source/TimeWarp.OptionsValidation/Extensions/ServiceCollectionExtensions.cs)
 
@@ -73,10 +74,12 @@ dotnet outdated
 - Integrates FluentValidation with Microsoft.Extensions.Options infrastructure
 - Located in [Source/TimeWarp.OptionsValidation/Extensions/OptionsBuilderExtensions.cs](Source/TimeWarp.OptionsValidation/Extensions/OptionsBuilderExtensions.cs)
 
-**SectionNameAttribute**
-- Allows overriding the configuration section name
-- Applied to options classes when the section name differs from the class name
-- Located in [Source/TimeWarp.OptionsValidation/Configuration/SectionNameAttribute.cs](Source/TimeWarp.OptionsValidation/Configuration/SectionNameAttribute.cs)
+**ConfigurationKeyAttribute**
+- Allows overriding the configuration key for binding
+- Applied to options classes when the key differs from the class name
+- Supports simple keys ("Database") and hierarchical keys ("MyApp:Settings:Database")
+- Aligns with Microsoft.Extensions.Configuration.IConfiguration.GetSection(string key) parameter naming
+- Located in [Source/TimeWarp.OptionsValidation/Configuration/ConfigurationKeyAttribute.cs](Source/TimeWarp.OptionsValidation/Configuration/ConfigurationKeyAttribute.cs)
 
 ### API Usage
 
@@ -102,9 +105,9 @@ services.AddFluentValidatedOptions<TOptions, TValidator>(configuration);
 ### Usage Pattern
 
 1. Define an options class (e.g., `MyOptions`)
-2. Create a FluentValidation validator (e.g., `MyOptionsValidator : AbstractValidator<MyOptions>`)
-3. Optionally decorate options class with `[SectionName("ConfigSectionName")]`
-4. Register with fluent API: `services.AddFluentValidatedOptions<MyOptions, MyOptionsValidator>(configuration).ValidateOnStart()`
+2. Create a nested sealed FluentValidation validator (e.g., `MyOptions.Validator : AbstractValidator<MyOptions>`)
+3. Optionally decorate options class with `[ConfigurationKey("Key")]` or `[ConfigurationKey("App:Settings:Key")]`
+4. Register with fluent API: `services.AddFluentValidatedOptions<MyOptions, MyOptions.Validator>(configuration).ValidateOnStart()`
 5. Validation executes automatically at startup (with `.ValidateOnStart()`) or on first access (without)
 
 ### Project Structure

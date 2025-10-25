@@ -140,15 +140,15 @@ services
   .ValidateOnStart();
 ```
 
-#### Custom Section Name with `[SectionName]` Attribute
+#### Custom Configuration Key with `[ConfigurationKey]` Attribute
 
-Override the default by decorating your options class with `[SectionName]`:
+Override the default by decorating your options class with `[ConfigurationKey]`:
 
-**Simple Section Name:**
+**Simple Configuration Key:**
 ```csharp
 using TimeWarp.OptionsValidation;
 
-[SectionName("Database")]
+[ConfigurationKey("Database")]
 public class DatabaseOptions
 {
   public string ConnectionString { get; set; } = string.Empty;
@@ -168,9 +168,9 @@ Binds to `"Database"` section:
 }
 ```
 
-**Nested Path with Colon Separator:**
+**Hierarchical Key with Colon Separator:**
 ```csharp
-[SectionName("MyApp:Settings:Database")]
+[ConfigurationKey("MyApp:Settings:Database")]
 public class DatabaseOptions
 {
   public string ConnectionString { get; set; } = string.Empty;
@@ -195,7 +195,7 @@ Binds to nested `"MyApp" → "Settings" → "Database"` path:
 ```
 
 ```csharp
-// Automatically binds to section specified in attribute
+// Automatically binds to configuration key specified in attribute
 services
   .AddFluentValidatedOptions<DatabaseOptions, DatabaseOptions.Validator>(configuration)
   .ValidateOnStart();
@@ -214,10 +214,10 @@ services.AddOptions<DatabaseOptions>()
   .ValidateOnStart();
 ```
 
-**Automatic Section Name Resolution Summary:**
+**Automatic Configuration Key Resolution Summary:**
 - ✅ Uses class name: `DatabaseOptions` → `"DatabaseOptions"`
-- ✅ Simple override: `[SectionName("Database")]` → `"Database"`
-- ✅ Nested paths: `[SectionName("MyApp:Settings:Database")]` → `"MyApp" → "Settings" → "Database"`
+- ✅ Simple override: `[ConfigurationKey("Database")]` → `"Database"`
+- ✅ Hierarchical paths: `[ConfigurationKey("MyApp:Settings:Database")]` → `"MyApp" → "Settings" → "Database"`
 - ❌ Does NOT trim suffixes like "Options" automatically
 - ❌ Does NOT pluralize names automatically
 
@@ -277,8 +277,9 @@ This approach validates options when they're first accessed rather than at appli
 ## Features
 
 - **Automatic Startup Validation**: Use `.ValidateOnStart()` to fail fast on invalid configuration
-- **Automatic Section Discovery**: Uses the class name as the configuration section name by default
-- **Custom Section Mapping**: Use `[SectionName]` attribute to override the section name
+- **Automatic Key Discovery**: Uses the class name as the configuration key by default
+- **Custom Key Mapping**: Use `[ConfigurationKey]` attribute to override the configuration key
+- **Hierarchical Keys**: Support for nested configuration paths using colon separators
 - **Seamless Integration**: Works with Microsoft.Extensions.Options infrastructure and `OptionsBuilder<T>`
 - **FluentValidation Power**: Rich validation rules, custom validators, conditional validation
 - **Clear Error Messages**: Detailed, actionable error messages from FluentValidation

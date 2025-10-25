@@ -14,10 +14,10 @@ public static class ServiceCollectionExtensions
   /// <param name="configuration">The configuration instance to bind from</param>
   /// <returns>The OptionsBuilder for method chaining (supports .ValidateOnStart())</returns>
   /// <remarks>
-  /// Section name resolution:
+  /// Configuration key resolution:
   /// - Default: Uses class name (DatabaseOptions → "DatabaseOptions")
-  /// - Custom: Uses [SectionName("Database")] → "Database"
-  /// - Nested: Uses [SectionName("MyApp:Settings:Database")] → nested path
+  /// - Custom: Uses [ConfigurationKey("Database")] → "Database"
+  /// - Hierarchical: Uses [ConfigurationKey("MyApp:Settings:Database")] → nested path
   /// </remarks>
   /// <example>
   /// <code>
@@ -25,11 +25,11 @@ public static class ServiceCollectionExtensions
   /// services.AddFluentValidatedOptions&lt;DatabaseOptions, DatabaseOptions.Validator&gt;(configuration)
   ///     .ValidateOnStart();
   ///
-  /// // Custom: [SectionName("Database")] binds from "Database" section
+  /// // Custom: [ConfigurationKey("Database")] binds from "Database" section
   /// services.AddFluentValidatedOptions&lt;DatabaseOptions, DatabaseOptions.Validator&gt;(configuration)
   ///     .ValidateOnStart();
   ///
-  /// // Nested: [SectionName("MyApp:Settings:Database")] binds from nested path
+  /// // Hierarchical: [ConfigurationKey("MyApp:Settings:Database")] binds from nested path
   /// services.AddFluentValidatedOptions&lt;DatabaseOptions, DatabaseOptions.Validator&gt;(configuration)
   ///     .ValidateOnStart();
   /// </code>
@@ -40,15 +40,15 @@ public static class ServiceCollectionExtensions
     where TOptions : class
     where TValidator : AbstractValidator<TOptions>
   {
-    // Auto-discover section name using SectionNameAttribute or class name
+    // Auto-discover configuration key using ConfigurationKeyAttribute or class name
     Type type = typeof(TOptions);
-    var sectionNameAttribute = (SectionNameAttribute?)type
-      .GetCustomAttributes(typeof(SectionNameAttribute), false)
+    var configurationKeyAttribute = (ConfigurationKeyAttribute?)type
+      .GetCustomAttributes(typeof(ConfigurationKeyAttribute), false)
       .FirstOrDefault();
-    string sectionName = sectionNameAttribute?.SectionName ?? type.Name;
+    string key = configurationKeyAttribute?.Key ?? type.Name;
 
     return services.AddOptions<TOptions>()
-      .Bind(configuration.GetSection(sectionName))
+      .Bind(configuration.GetSection(key))
       .ValidateFluentValidation<TOptions, TValidator>();
   }
 
