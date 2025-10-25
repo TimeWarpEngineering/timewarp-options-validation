@@ -31,4 +31,8 @@
     <None Include="$(RepositoryRoot)license" Pack="true" PackagePath="" />
   </ItemGroup>
 
+  <ItemGroup Label="Build Tasks">
+    <PackageReference Include="TimeWarp.Build.Tasks" />
+  </ItemGroup>
+
 </Project>
