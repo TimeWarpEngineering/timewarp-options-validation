@@ -60,10 +60,9 @@ dotnet outdated
 - Located in [Source/TimeWarp.OptionsValidation/Configuration/OptionsValidation.cs](Source/TimeWarp.OptionsValidation/Configuration/OptionsValidation.cs)
 
 **ServiceCollectionExtensions**
-- Provides two API patterns for configuring options with FluentValidation:
-  - `AddFluentValidatedOptions<TOptions, TValidator>()` - Returns `OptionsBuilder<T>`, supports `.ValidateOnStart()`
-  - `ConfigureOptions<TOptions, TValidator>()` - Returns `IServiceCollection`, simpler API
-- Two overloads for each: one accepts `IConfiguration`, the other accepts `Action<TOptions>`
+- Provides `AddFluentValidatedOptions<TOptions, TValidator>()` extension methods
+- Two overloads: one accepts `IConfiguration`, the other accepts `Action<TOptions>`
+- Returns `OptionsBuilder<T>`, enabling chaining with `.ValidateOnStart()`
 - Automatically discovers configuration section names via `SectionNameAttribute` or defaults to type name
 - Registers both the validator and the `IValidateOptions<TOptions>` implementation
 - Located in [Source/TimeWarp.OptionsValidation/Extensions/ServiceCollectionExtensions.cs](Source/TimeWarp.OptionsValidation/Extensions/ServiceCollectionExtensions.cs)
@@ -79,29 +78,26 @@ dotnet outdated
 - Applied to options classes when the section name differs from the class name
 - Located in [Source/TimeWarp.OptionsValidation/Configuration/SectionNameAttribute.cs](Source/TimeWarp.OptionsValidation/Configuration/SectionNameAttribute.cs)
 
-### API Patterns
+### API Usage
 
-The library provides two API patterns:
-
-**Fluent API (Recommended for Production)**
+**With Startup Validation (Recommended)**
 ```csharp
 services.AddFluentValidatedOptions<TOptions, TValidator>(configuration)
     .ValidateOnStart(); // Validates at startup, fails fast
 ```
 - Returns `OptionsBuilder<T>` for method chaining
-- Supports `.ValidateOnStart()` for automatic startup validation
+- Validates automatically at startup with `.ValidateOnStart()`
 - Integrates with host lifecycle (validates before app runs)
 - Fails fast on invalid configuration at startup
-- Best for production applications
+- Recommended for production applications
 
-**Simple API (For Development/Simple Scenarios)**
+**Without Startup Validation**
 ```csharp
-services.ConfigureOptions<TOptions, TValidator>(configuration);
+services.AddFluentValidatedOptions<TOptions, TValidator>(configuration);
+// Omit .ValidateOnStart() for lazy validation
 ```
-- Returns `IServiceCollection` for simple chaining
 - Validates on first access (lazy validation)
-- Simpler syntax for basic scenarios
-- Best for development or when startup validation isn't critical
+- Useful for development or when startup validation isn't needed
 
 ### Usage Pattern
 

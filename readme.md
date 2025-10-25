@@ -45,47 +45,44 @@ You can see the latest NuGet packages from the official [TimeWarp NuGet page](ht
 
 ## Usage
 
-### Recommended: Fluent API with Automatic Startup Validation
+### Basic Setup with Automatic Startup Validation
 
-The recommended approach uses `AddFluentValidatedOptions()` which returns `OptionsBuilder<T>`, allowing you to chain with `.ValidateOnStart()` for automatic startup validation.
+Use `AddFluentValidatedOptions()` which returns `OptionsBuilder<T>`, allowing you to chain with `.ValidateOnStart()` for automatic startup validation.
 
-#### 1. Define Your Options Class
+#### 1. Define Your Options Class with Nested Validator
 
 ```csharp
+using FluentValidation;
+
 public class DatabaseOptions
 {
   public string ConnectionString { get; set; } = string.Empty;
   public int MaxRetries { get; set; }
   public int CommandTimeout { get; set; }
-}
-```
 
-#### 2. Create a FluentValidation Validator
-
-```csharp
-using FluentValidation;
-
-public class DatabaseOptionsValidator : AbstractValidator<DatabaseOptions>
-{
-  public DatabaseOptionsValidator()
+  // Nested validator - sealed and only used here
+  public sealed class Validator : AbstractValidator<DatabaseOptions>
   {
-    RuleFor(x => x.ConnectionString)
-      .NotEmpty()
-      .WithMessage("Database connection string is required");
+    public Validator()
+    {
+      RuleFor(x => x.ConnectionString)
+        .NotEmpty()
+        .WithMessage("Database connection string is required");
 
-    RuleFor(x => x.MaxRetries)
-      .GreaterThan(0)
-      .LessThanOrEqualTo(10)
-      .WithMessage("MaxRetries must be between 1 and 10");
+      RuleFor(x => x.MaxRetries)
+        .GreaterThan(0)
+        .LessThanOrEqualTo(10)
+        .WithMessage("MaxRetries must be between 1 and 10");
 
-    RuleFor(x => x.CommandTimeout)
-      .GreaterThanOrEqualTo(30)
-      .WithMessage("CommandTimeout must be at least 30 seconds");
+      RuleFor(x => x.CommandTimeout)
+        .GreaterThanOrEqualTo(30)
+        .WithMessage("CommandTimeout must be at least 30 seconds");
+    }
   }
 }
 ```
 
-#### 3. Register with Automatic Startup Validation
+#### 2. Register with Automatic Startup Validation
 
 ```csharp
 using Microsoft.Extensions.DependencyInjection;
@@ -94,7 +91,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Register options with automatic startup validation
 builder.Services
-  .AddFluentValidatedOptions<DatabaseOptions, DatabaseOptionsValidator>(builder.Configuration)
+  .AddFluentValidatedOptions<DatabaseOptions, DatabaseOptions.Validator>(builder.Configuration)
   .ValidateOnStart(); // ✅ Validates when host starts, throws on error
 
 var app = builder.Build();
@@ -126,7 +123,7 @@ By default, the library looks for a configuration section with the same name as 
 
 ```csharp
 services
-  .AddFluentValidatedOptions<DatabaseOptions, DatabaseOptionsValidator>(configuration)
+  .AddFluentValidatedOptions<DatabaseOptions, DatabaseOptions.Validator>(configuration)
   .ValidateOnStart();
 ```
 
@@ -163,7 +160,7 @@ You can also configure options programmatically without IConfiguration:
 
 ```csharp
 services
-  .AddFluentValidatedOptions<DatabaseOptions, DatabaseOptionsValidator>(options =>
+  .AddFluentValidatedOptions<DatabaseOptions, DatabaseOptions.Validator>(options =>
   {
     options.ConnectionString = "Server=localhost;Database=myapp;";
     options.MaxRetries = 3;
@@ -181,15 +178,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Register multiple validated options with automatic startup validation
 builder.Services
-  .AddFluentValidatedOptions<DatabaseOptions, DatabaseOptionsValidator>(builder.Configuration)
+  .AddFluentValidatedOptions<DatabaseOptions, DatabaseOptions.Validator>(builder.Configuration)
   .ValidateOnStart();
 
 builder.Services
-  .AddFluentValidatedOptions<CacheOptions, CacheOptionsValidator>(builder.Configuration)
+  .AddFluentValidatedOptions<CacheOptions, CacheOptions.Validator>(builder.Configuration)
   .ValidateOnStart();
 
 builder.Services
-  .AddFluentValidatedOptions<EmailOptions, EmailOptionsValidator>(builder.Configuration)
+  .AddFluentValidatedOptions<EmailOptions, EmailOptions.Validator>(builder.Configuration)
   .ValidateOnStart();
 
 var app = builder.Build();
@@ -198,21 +195,17 @@ app.Run(); // All options validated before this runs
 
 If any configuration is invalid, the application will **fail to start** with clear error messages indicating exactly which settings are invalid and why.
 
-### Alternative: Simple Registration (Without Startup Validation)
+### Without Startup Validation
 
-If you don't need automatic startup validation, you can use the simpler `ConfigureOptions()` method:
+If you don't need automatic startup validation, simply omit `.ValidateOnStart()`:
 
 ```csharp
-// Simpler syntax, but validates on first access instead of at startup
-services.ConfigureOptions<DatabaseOptions, DatabaseOptionsValidator>(configuration);
+// Validates on first access instead of at startup
+services.AddFluentValidatedOptions<DatabaseOptions, DatabaseOptions.Validator>(configuration);
+// No .ValidateOnStart() call - validation happens lazily
 ```
 
-**Comparison:**
-
-| Approach | Validates | Supports `.ValidateOnStart()` | Best For |
-|----------|-----------|-------------------------------|----------|
-| `AddFluentValidatedOptions()` | At startup (with `.ValidateOnStart()`) | ✅ Yes | Production apps - fail fast on invalid config |
-| `ConfigureOptions()` | On first access | ❌ No | Simple scenarios, development |
+This approach validates options when they're first accessed rather than at application startup.
 
 ## Features
 

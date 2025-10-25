@@ -22,7 +22,7 @@ public static class OptionsBuilderExtensions
   /// <code>
   /// services.AddOptions&lt;DatabaseOptions&gt;()
   ///     .Bind(configuration.GetSection("Database"))
-  ///     .ValidateFluentValidation&lt;DatabaseOptions, DatabaseOptionsValidator&gt;()
+  ///     .ValidateFluentValidation&lt;DatabaseOptions, DatabaseOptions.Validator&gt;()
   ///     .ValidateOnStart();
   /// </code>
   /// </example>
