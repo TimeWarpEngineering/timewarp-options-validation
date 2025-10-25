@@ -33,6 +33,7 @@
 
   <ItemGroup Label="Build Tasks">
     <PackageReference Include="TimeWarp.Build.Tasks" />
+    <PackageReference Include="TimeWarp.SourceGenerators" />
   </ItemGroup>
 
 </Project>
