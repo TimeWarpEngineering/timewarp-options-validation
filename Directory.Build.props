@@ -66,8 +66,7 @@
     <!-- CA1852: Seal types (not applicable for test base classes) -->
     <!-- CA2007: ConfigureAwait (not needed for console applications and tests) -->
     <!-- RCS1102: Make class static (test classes with static methods are discovered by Fixie) -->
-    <!-- IL2026, IL2067, IL2070, IL2075, IL3050, IL2104, IL3053: AOT warnings (not yet implemented) -->
-    <NoWarn>$(NoWarn);CA1014;CA1031;CA1052;CA1515;CA1707;CA1724;CA1812;CA1848;CA1852;CA2007;RCS1102;IL2026;IL2067;IL2070;IL2075;IL3050;IL2104;IL3053</NoWarn>
+<NoWarn>$(NoWarn);CA1014;CA1031;CA1052;CA1515;CA1707;CA1724;CA1812;CA1848;CA1852;CA2007;RCS1102</NoWarn>
   </PropertyGroup>
 
   <!-- Code analyzers applied to all projects -->

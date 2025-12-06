@@ -35,6 +35,8 @@ public static class ServiceCollectionExtensions
   ///     .ValidateOnStart();
   /// </code>
   /// </example>
+  [RequiresUnreferencedCode("TOptions's dependent types may have their members trimmed. Ensure all required members are preserved.")]
+  [RequiresDynamicCode("Binding strongly typed objects to configuration values may require generating dynamic code at runtime.")]
   public static OptionsBuilder<TOptions> AddFluentValidatedOptions<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TOptions, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TValidator>(
     this IServiceCollection services,
     IConfiguration configuration)
