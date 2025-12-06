@@ -3,6 +3,8 @@
   <PropertyGroup>
     <AssemblyName>TimeWarp.OptionsValidation</AssemblyName>
     <RootNamespace>TimeWarp.OptionsValidation</RootNamespace>
+    <IsAotCompatible>true</IsAotCompatible>
+    <IsTrimmable>true</IsTrimmable>
   </PropertyGroup>
 
   <ItemGroup>
