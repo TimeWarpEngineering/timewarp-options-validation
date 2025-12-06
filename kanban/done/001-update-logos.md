@@ -32,3 +32,10 @@ The avatar SVG will need to be renamed to `timewarp-options-validation-avatar.sv
 Current assets in this repo:
 - `assets/logo.png`
 - `assets/timewarp-options-validation-avatar.svg`
+
+## Results
+
+- Copied `logo.png` (4778 bytes) from timewarp-flexbox to `assets/logo.png`
+- Copied `timewarp-flexbox-avatar.svg` (4304 bytes) and renamed to `assets/timewarp-options-validation-avatar.svg`
+- Documentation already referenced correct paths (`assets/logo.png`) - no changes needed
+- Closes GitHub Issue #5
