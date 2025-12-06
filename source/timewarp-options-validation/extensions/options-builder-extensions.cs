@@ -1,5 +1,6 @@
 namespace Microsoft.Extensions.Options;
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using FluentValidation;
@@ -26,7 +27,7 @@ public static class OptionsBuilderExtensions
   ///     .ValidateOnStart();
   /// </code>
   /// </example>
-  public static OptionsBuilder<TOptions> ValidateFluentValidation<TOptions, TValidator>(
+  public static OptionsBuilder<TOptions> ValidateFluentValidation<TOptions, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TValidator>(
     this OptionsBuilder<TOptions> optionsBuilder)
     where TOptions : class
     where TValidator : AbstractValidator<TOptions>

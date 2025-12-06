@@ -1,5 +1,6 @@
-﻿namespace Microsoft.Extensions.DependencyInjection;
+namespace Microsoft.Extensions.DependencyInjection;
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Options;
 
 public static class ServiceCollectionExtensions
@@ -34,7 +35,9 @@ public static class ServiceCollectionExtensions
   ///     .ValidateOnStart();
   /// </code>
   /// </example>
-  public static OptionsBuilder<TOptions> AddFluentValidatedOptions<TOptions, TValidator>(
+  [RequiresUnreferencedCode("TOptions's dependent types may have their members trimmed. Ensure all required members are preserved.")]
+  [RequiresDynamicCode("Binding strongly typed objects to configuration values may require generating dynamic code at runtime.")]
+  public static OptionsBuilder<TOptions> AddFluentValidatedOptions<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TOptions, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TValidator>(
     this IServiceCollection services,
     IConfiguration configuration)
     where TOptions : class
@@ -71,7 +74,7 @@ public static class ServiceCollectionExtensions
   /// .ValidateOnStart();
   /// </code>
   /// </example>
-  public static OptionsBuilder<TOptions> AddFluentValidatedOptions<TOptions, TValidator>(
+  public static OptionsBuilder<TOptions> AddFluentValidatedOptions<TOptions, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TValidator>(
     this IServiceCollection services,
     Action<TOptions> configureOptions)
     where TOptions : class
