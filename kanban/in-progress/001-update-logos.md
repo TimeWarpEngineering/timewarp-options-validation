@@ -6,12 +6,12 @@ Update all logo assets in this repository to maintain consistency across TimeWar
 
 ## Todo List
 
-- [ ] Copy logo assets from timewarp-flexbox source directory
-- [ ] Update logo.png in assets/
-- [ ] Create/update timewarp-options-validation-avatar.svg
-- [ ] Ensure consistent sizing and formatting
-- [ ] Update any documentation that references the logos
-- [ ] Verify logo appearance in all contexts where used
+- [x] Copy logo assets from timewarp-flexbox source directory
+- [x] Update logo.png in assets/
+- [x] Create/update timewarp-options-validation-avatar.svg
+- [x] Ensure consistent sizing and formatting
+- [x] Update any documentation that references the logos
+- [x] Verify logo appearance in all contexts where used
 
 ## Notes
 
