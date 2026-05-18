@@ -18,5 +18,6 @@
     "titleBar.inactiveBackground": "#f15e5899",
     "titleBar.inactiveForeground": "#15202b99"
   },
-  "peacock.remoteColor": "#F15E58"
+  "peacock.remoteColor": "#F15E58",
+  "timewarp.blurImagePath": "assets/timewarp-options-validation-avatar.svg"
 }
