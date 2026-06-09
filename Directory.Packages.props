@@ -19,6 +19,12 @@
     </PackageVersion>
     <PackageVersion Include="TimeWarp.SourceGenerators" Version="1.0.0-beta.7" />
   </ItemGroup>
+  <ItemGroup Label="Dev CLI">
+    <PackageVersion Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.4" />
+    <PackageVersion Include="TimeWarp.Nuru" Version="3.0.0-beta.70" />
+    <PackageVersion Include="TimeWarp.Amuru" Version="1.0.0-beta.34" />
+    <PackageVersion Include="TimeWarp.Terminal" Version="1.0.0-beta.13" />
+  </ItemGroup>
   <ItemGroup Label="FluentValidation">
     <PackageVersion Include="FluentValidation" Version="12.1.1" />
   </ItemGroup>
