@@ -1,5 +1,4 @@
-<Project>
-
+﻿<Project>
   <!-- Custom path definitions for repository structure -->
   <PropertyGroup Label="Custom Repository Variables">
     <RepositoryName>timewarp-options-validation</RepositoryName>
@@ -11,19 +10,15 @@
     <ArtifactsDirectory>$(RepositoryRoot)artifacts/</ArtifactsDirectory>
     <PackagesDirectory>$(ArtifactsDirectory)packages/</PackagesDirectory>
   </PropertyGroup>
-
   <!-- MSBuild and NuGet behavior configuration -->
   <PropertyGroup Label="MSBuild/NuGet Configuration">
     <!-- Output packages to our local feed directory -->
     <PackageOutputPath>$(PackagesDirectory)</PackageOutputPath>
-
     <!-- Central package management -->
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-
     <!-- Suppress .NET preview SDK message -->
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
   </PropertyGroup>
-
   <!-- Default language and framework settings for all projects -->
   <PropertyGroup Label="Project Defaults">
     <TargetFramework>net10.0</TargetFramework>
@@ -33,7 +28,6 @@
     <IsPackable>false</IsPackable>
     <EnablePreviewFeatures>true</EnablePreviewFeatures>
   </PropertyGroup>
-
   <!-- Code quality, analyzers, and warning configuration -->
   <PropertyGroup Label="Code Quality and Analysis">
     <!-- Treat all warnings as errors -->
@@ -43,17 +37,13 @@
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisMode>All</AnalysisMode>
     <AnalysisLevel>latest-all</AnalysisLevel>
-
     <!-- Report analyzer diagnostics in build output -->
     <ReportAnalyzer>true</ReportAnalyzer>
     <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
-
     <!-- Generate XML documentation files -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-
     <!-- Emit compiler generated files for source generators -->
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-
     <!-- Suppress specific warnings -->
     <!-- CA1014: CLS compliance not required for this library -->
     <!-- CA1031: Catch general exceptions (needed for validation error handling) -->
@@ -66,9 +56,8 @@
     <!-- CA1852: Seal types (not applicable for test base classes) -->
     <!-- CA2007: ConfigureAwait (not needed for console applications and tests) -->
     <!-- RCS1102: Make class static (test classes with static methods are discovered by Fixie) -->
-<NoWarn>$(NoWarn);CA1014;CA1031;CA1052;CA1515;CA1707;CA1724;CA1812;CA1848;CA1852;CA2007;RCS1102</NoWarn>
+    <NoWarn>$(NoWarn);CA1014;CA1031;CA1052;CA1515;CA1707;CA1724;CA1812;CA1848;CA1852;CA2007;RCS1102</NoWarn>
   </PropertyGroup>
-
   <!-- Code analyzers applied to all projects -->
   <ItemGroup Label="Code Analyzers">
     <PackageReference Include="Roslynator.Analyzers" PrivateAssets="all" />
@@ -77,5 +66,11 @@
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" PrivateAssets="all" />
   </ItemGroup>
-
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)BannedSymbols.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="TimeWarp.Build.Tasks" PrivateAssets="all" />
+  </ItemGroup>
 </Project>

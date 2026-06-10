@@ -1,16 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
   <!-- MSBuild and NuGet behavior configuration -->
   <PropertyGroup Label="MSBuild/NuGet Configuration">
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup Label="Microsoft Extensions">
-    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="9.0.10" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.10" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.10" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.10" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.10" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.10" />
-    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="10.0.8" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.8" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.8" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.8" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.8" />
+    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.8" />
     <PackageVersion Include="Shouldly" Version="4.3.0" />
     <PackageVersion Include="TimeWarp.Build.Tasks" Version="1.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -18,28 +18,24 @@
     </PackageVersion>
     <PackageVersion Include="TimeWarp.SourceGenerators" Version="1.0.0-beta.7" />
   </ItemGroup>
+  <ItemGroup Label="Dev CLI">
+    <PackageVersion Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.4" />
+    <PackageVersion Include="TimeWarp.Nuru" Version="3.0.0-beta.70" />
+    <PackageVersion Include="TimeWarp.Amuru" Version="1.0.0-beta.34" />
+    <PackageVersion Include="TimeWarp.Terminal" Version="1.0.0-beta.13" />
+  </ItemGroup>
   <ItemGroup Label="FluentValidation">
-    <PackageVersion Include="FluentValidation" Version="12.0.0" />
+    <PackageVersion Include="FluentValidation" Version="12.1.1" />
   </ItemGroup>
   <ItemGroup Label="Testing">
-    <PackageVersion Include="FakeItEasy" Version="7.3.1" />
-    <PackageVersion Include="Fixie" Version="3.4.0" />
-    <PackageVersion Include="Fixie.TestAdapter" Version="4.1.0" />
-    <PackageVersion Include="FluentAssertions" Version="8.8.0" />
-    <PackageVersion Include="MediatR" Version="11.0.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.10" />
+    <PackageVersion Include="Fixie.TestAdapter" Version="4.2.0" />
     <PackageVersion Include="TimeWarp.Fixie" Version="3.1.0" />
   </ItemGroup>
   <ItemGroup Label="Code Analyzers">
-    <PackageVersion Include="Roslynator.Analyzers" Version="4.14.1" />
-    <PackageVersion Include="Roslynator.CodeAnalysis.Analyzers" Version="4.14.1" />
-    <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.14.1" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="4.14.0" />
-  </ItemGroup>
-  <ItemGroup Label="Roslyn Analyzer Dependencies">
-    <PackageVersion Include="Microsoft.CodeAnalysis" Version="4.14.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="4.14.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
+    <PackageVersion Include="Roslynator.Analyzers" Version="4.15.0" />
+    <PackageVersion Include="Roslynator.CodeAnalysis.Analyzers" Version="4.15.0" />
+    <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.15.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="10.0.300" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="5.3.0" />
   </ItemGroup>
 </Project>
