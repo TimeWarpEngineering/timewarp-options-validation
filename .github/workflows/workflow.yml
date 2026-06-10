@@ -28,6 +28,9 @@ on:
 jobs:
   ci:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write  # Required for NuGet Trusted Publishing (OIDC)
 
     steps:
       - name: Checkout repository
@@ -40,10 +43,17 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
+      - name: NuGet login (OIDC Trusted Publishing)
+        if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
+        id: nuget-login
+        uses: nuget/login@v1
+        with:
+          user: TimeWarp.Enterprises
+
       - name: Run CI Pipeline
         run: |
           if [ "${{ github.event_name }}" == "release" ] || [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            dotnet run --file tools/dev-cli/dev.cs -- workflow --api-key "${{ secrets.PUBLISH_TO_NUGET_ORG }}"
+            dotnet run --file tools/dev-cli/dev.cs -- workflow --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}"
           else
             dotnet run --file tools/dev-cli/dev.cs -- workflow
           fi
