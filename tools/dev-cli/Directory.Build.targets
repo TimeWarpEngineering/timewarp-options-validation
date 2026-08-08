@@ -1,0 +1,9 @@
+<Project>
+  <!--
+    TimeWarp.Nuru 3.0.0-beta.72 ships build/TimeWarp.Nuru.targets but omits
+    build/net10.0/TimeWarp.Nuru.Build.dll (packaging regression vs beta.71).
+    Directory.Build.targets is imported after package targets, so this redefines
+    GenerateNuruJsonContext as a no-op until a fixed Nuru package ships.
+  -->
+  <Target Name="GenerateNuruJsonContext" BeforeTargets="CoreCompile" />
+</Project>

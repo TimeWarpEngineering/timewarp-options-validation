@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <!-- Suppress warnings that don't apply to CLI tools -->
-    <NoWarn>$(NoWarn);CA1031;CA1303;CA1508;CA1515;CA1849;CA2007;CA2016;CA2000;RCS1046</NoWarn>
+    <NoWarn>$(NoWarn);CA1031;CA1303;CA1508;CA1515;CA1849;CA2007;CA2016;CA2000;RCS1046;IDE0005;IDE0011;IDE0130;IDE0290;IDE0305;IDE0370</NoWarn>
 
     <!-- AOT Support -->
     <PublishAot>true</PublishAot>
@@ -23,6 +23,7 @@
     <!-- Package references -->
     <PackageReference Include="TimeWarp.Nuru" />
     <PackageReference Include="TimeWarp.Amuru" />
+    <PackageReference Include="TimeWarp.Amuru.Tools" />
     <PackageReference Include="TimeWarp.Terminal" />
   </ItemGroup>
 

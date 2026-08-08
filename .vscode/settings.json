@@ -18,5 +18,7 @@
     "titleBar.inactiveBackground": "#f15e5899",
     "titleBar.inactiveForeground": "#15202b99"
   },
-  "peacock.remoteColor": "#F15E58"
+  "peacock.remoteColor": "#F15E58",
+  "window.title": "timewarp-options-validation · ${rootName}${separator}${activeEditorShort}",
+  "timewarp.blurImagePath": "assets/timewarp-options-validation-avatar.svg"
 }

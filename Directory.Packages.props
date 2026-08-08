@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project>
   <!-- MSBuild and NuGet behavior configuration -->
   <PropertyGroup Label="MSBuild/NuGet Configuration">
@@ -20,9 +20,10 @@
   </ItemGroup>
   <ItemGroup Label="Dev CLI">
     <PackageVersion Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.4" />
-    <PackageVersion Include="TimeWarp.Nuru" Version="3.0.0-beta.70" />
-    <PackageVersion Include="TimeWarp.Amuru" Version="1.0.0-beta.34" />
-    <PackageVersion Include="TimeWarp.Terminal" Version="1.0.0-beta.13" />
+    <PackageVersion Include="TimeWarp.Nuru" Version="3.0.0-beta.72" />
+    <PackageVersion Include="TimeWarp.Amuru" Version="1.0.0" />
+    <PackageVersion Include="TimeWarp.Amuru.Tools" Version="1.0.0-beta.2" />
+    <PackageVersion Include="TimeWarp.Terminal" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup Label="FluentValidation">
     <PackageVersion Include="FluentValidation" Version="12.1.1" />
